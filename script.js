@@ -327,8 +327,8 @@ async function loadWordsData() {
             fetch('COS/bgm_files.json') // ADDED: Fetch BGM file list
         ]);
 
-        if (!wordsResponse.ok) throw new Error(`HTTP error! status: ${wordsResponse.status} for COS/words.json`);
-        if (!bgmResponse.ok) throw new Error(`HTTP error! status: ${bgmResponse.status} for COS/bgm_files.json`);
+        if (!wordsResponse.ok) throw new Error(`HTTP error! status: ${wordsResponse.status} for words.json`);
+        if (!bgmResponse.ok) throw new Error(`HTTP error! status: ${bgmResponse.status} for bgm_files.json`);
         
         allWordsData = await wordsResponse.json();
         bgmFilesList = await bgmResponse.json(); // ADDED: Store BGM file list
