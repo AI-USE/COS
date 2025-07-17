@@ -938,29 +938,43 @@ function setupMeaningQuiz() {
     // elements.testWordDisplay.textContent = currentWord.word; // This should not be set here for meaning -> word test
     let choices = [{ text: currentWord.word, correct: true }]; // Choices are now words
     
-    // Get other words from the current course for distractors
-    const otherWordsInCourse = allWordsData[state.currentCourse]
-        .filter(w => w.word !== currentWord.word)
+    const currentWordLabels = new Set(currentWord.labels); // 現在の単語のラベルを取得
+    const otherWordsInCourseAndLabel = allWordsData[state.currentCourse]
+        .filter(w => w.word !== currentWord.word && w.labels && w.labels.some(label => currentWordLabels.has(label)))
         .map(w => w.word);
     
-    const shuffledOtherWords = shuffleArray(otherWordsInCourse);
+    const shuffledOtherWords = shuffleArray(otherWordsInCourseAndLabel);
 
-    // Add up to 3 distinct incorrect word choices
+    // 同じコース、同じラベルから最大3つの不正解の選択肢を追加
     for (let i = 0; i < 3 && i < shuffledOtherWords.length; i++) {
         choices.push({ text: shuffledOtherWords[i], correct: false });
     }
+    // 他のコースからの選択肢は追加しない（要件による）
 
-    // If not enough distractors from the current course, pull from other courses
-    if (choices.length < 4) {
-        const allOtherWords = Object.values(allWordsData).flat()
-            .map(w => w.word)
-            .filter(w => !choices.some(c => c.text === w)); // Ensure uniqueness
-        const shuffledAllOtherWords = shuffleArray(allOtherWords);
-        for (let i = 0; choices.length < 4 && i < shuffledAllOtherWords.length; i++) {
-            choices.push({ text: shuffledAllOtherWords[i], correct: false });
+    choices = shuffleArray(choices);
+    document.querySelectorAll('.test-choice-button').forEach((button, index) => {
+        if (choices[index]) {
+            const newButton = button.cloneNode(true);
+            newButton.textContent = choices[index].text;
+            newButton.dataset.correct = choices[index].correct;
+            newButton.disabled = false;
+            newButton.className = 'btn test-choice-button'; // Reset classes
+            newButton.style.display = 'block';
+            // Remove existing event listener to prevent duplicates
+            const oldButton = button;
+            const newButtonClean = oldButton.cloneNode(true);
+            oldButton.parentNode.replaceChild(newButtonClean, oldButton);
+            newButtonClean.textContent = choices[index].text;
+            newButtonClean.dataset.correct = choices[index].correct;
+            newButtonClean.disabled = false;
+            newButtonClean.className = 'btn test-choice-button';
+            newButtonClean.style.display = 'block';
+            newButtonClean.addEventListener('click', handleMeaningChoice);
+        } else {
+            button.style.display = 'none';
         }
-    }
-
+    });
+}
     choices = shuffleArray(choices);
     document.querySelectorAll('.test-choice-button').forEach((button, index) => {
         if (choices[index]) {
