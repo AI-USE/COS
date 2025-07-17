@@ -6,7 +6,7 @@ const elements = {
     gameScreen: document.getElementById('game-screen'),
     testScreen: document.getElementById('test-screen'),
     resultScreen: document.getElementById('result-screen'),
-    historyScreen: document.getElementById('history-screen'),
+    gradeManagementScreen: document.getElementById('grade-management-screen'),
 
     // Start Screen
     contentSelect: document.getElementById('content-select'),
@@ -16,6 +16,7 @@ const elements = {
     filterAll: document.getElementById('filter-all'),
     filterUnseen: document.getElementById('filter-unseen'),
     filterMistakes: document.getElementById('filter-mistakes'),
+    filterCorrect: document.getElementById('filter-correct'), // Added filterCorrect
     filterCustom: document.getElementById('filter-custom'),
     customFilterPanel: document.getElementById('custom-filter-panel'),
     incorrectCountFilter: document.getElementById('incorrect-count-filter'),
@@ -31,12 +32,14 @@ const elements = {
     clearDataButton: document.getElementById('clear-data-button'),
 
     // Mode Selection Screen
-    startWordTypingAudioBtn: document.getElementById('start-word-typing-audio-btn'),
+    startWordTypingWordAudioBtn: document.getElementById('start-word-typing-word-audio-btn'),
+    startWordTypingMeaningAudioBtn: document.getElementById('start-word-typing-meaning-audio-btn'),
     startWordTypingNoAudioBtn: document.getElementById('start-word-typing-no-audio-btn'),
-    startMeaningTypingAudioBtn: document.getElementById('start-meaning-typing-audio-btn'),
+    startMeaningTypingMeaningAudioBtn: document.getElementById('start-meaning-typing-meaning-audio-btn'),
+    startMeaningTypingWordAudioBtn: document.getElementById('start-meaning-typing-word-audio-btn'),
     startMeaningTypingNoAudioBtn: document.getElementById('start-meaning-typing-no-audio-btn'),
-    startWordToMeaningAudioBtn: document.getElementById('start-word-to-meaning-audio-btn'),
-    startWordToMeaningNoAudioBtn: document.getElementById('start-word-to-meaning-no-audio-btn'),
+    
+    
     modeBackButton: document.getElementById('mode-back-button'),
 
     // Game Screen
@@ -76,31 +79,73 @@ const elements = {
     resultMaxCombo: document.getElementById('result-max-combo'),
     resultMiss: document.getElementById('result-miss'),
     resultDifficultyBreakdown: document.getElementById('result-difficulty-breakdown'),
+    resultCorrectCount: document.getElementById('result-correct-count'), // Added for test results
+    resultIncorrectCount: document.getElementById('result-incorrect-count'), // Added for test results
+    resultDuration: document.getElementById('result-duration'), // Added for test results
     restartButton: document.getElementById('restart-button'),
     backToTopButton: document.getElementById('back-to-top-button'),
 
-    // History Screen
-    showRecentBtn: document.getElementById('show-recent-btn'),
-    showDailyBtn: document.getElementById('show-daily-btn'),
-    showBestsBtn: document.getElementById('show-bests-btn'),
-    showLabelStatsBtn: document.getElementById('show-label-stats-btn'),
-    modeFilterContainer: document.querySelector('#history-screen .mode-filter-container'),
-    filterAllModes: document.getElementById('filter-all-modes'),
-    filterTypingMode: document.getElementById('filter-typing-mode'),
-    filterSpellingMode: document.getElementById('filter-spelling-mode'),
-    filterMeaningMode: document.getElementById('filter-meaning-mode'),
-    modeFilterContainer: document.querySelector('.mode-filter-container'),
-    historyChartCanvas: document.getElementById('history-chart'),
+    // Grade Management Screen Tabs
+    tabHistory: document.getElementById('tab-history'),
+    tabTyping: document.getElementById('tab-typing'),
+    tabTest: document.getElementById('tab-test'),
+    tabRecordSearch: document.getElementById('tab-record-search'),
+
+    // Tab Contents
+    historyTabContent: document.getElementById('history-tab-content'),
+    typingTabContent: document.getElementById('typing-tab-content'),
+    testTabContent: document.getElementById('test-tab-content'),
+    recordSearchTabContent: document.getElementById('record-search-tab-content'),
+
+    // History Tab (re-using historyTableContainer for recent history)
     historyTableContainer: document.getElementById('history-table-container'),
-    personalBestsContainer: document.getElementById('personal-bests-container'),
-    historyBackButton: document.getElementById('history-back-button'),
+    modeFilterContainer: document.querySelector('#history-tab-content .mode-filter-container'), // Specific to history tab
+
+    // Typing Tab
+    typingPersonalBestsContainer: document.getElementById('typing-personal-bests-container'),
+    typingDailyChartCanvas: document.getElementById('typing-daily-chart'),
+    typingDailyTableContainer: document.getElementById('typing-daily-table-container'),
+
+    // Test Tab
+    subTabMeaningTest: document.getElementById('sub-tab-meaning-test'),
+    subTabSpellingTest: document.getElementById('sub-tab-spelling-test'),
+    meaningTestContent: document.getElementById('meaning-test-content'),
+    spellingTestContent: document.getElementById('spelling-test-content'),
+    testCourseSelectMeaning: document.getElementById('test-course-select-meaning'),
+    meaningTestChartCanvas: document.getElementById('meaning-test-chart'),
+    meaningTestLabelStatsTable: document.getElementById('meaning-test-label-stats-table'),
+    testCourseSelectSpelling: document.getElementById('test-course-select-spelling'),
+    spellingTestChartCanvas: document.getElementById('spelling-test-chart'),
+    spellingTestLabelStatsTable: document.getElementById('spelling-test-label-stats-table'),
+
+    // Record Search Tab
+    searchCourseSelect: document.getElementById('search-course-select'),
+    wordSearchInput: document.getElementById('word-search-input'), // ADDED
+    searchLabelSelectionContainer: document.getElementById('search-label-selection-container'),
+    searchSelectAllLabels: document.getElementById('search-select-all-labels'),
+    searchDeselectAllLabels: document.getElementById('search-deselect-all-labels'),
+    searchLabelAccordionHeader: document.getElementById('search-label-accordion-header'),
+    searchFilterAll: document.getElementById('search-filter-all'),
+    searchFilterUnseen: document.getElementById('search-filter-unseen'),
+    searchFilterMistakes: document.getElementById('search-filter-mistakes'),
+    searchFilterCorrect: document.getElementById('search-filter-correct'),
+    searchFilterCustom: document.getElementById('search-filter-custom'),
+    searchCustomFilterPanel: document.getElementById('search-custom-filter-panel'),
+    searchIncorrectCountFilter: document.getElementById('search-incorrect-count-filter'),
+    searchAccuracyRangeFilterMin: document.getElementById('search-accuracy-range-filter-min'),
+    searchAccuracyRangeFilterMax: document.getElementById('search-accuracy-range-filter-max'),
+    performRecordSearch: document.getElementById('perform-record-search'),
+    recordSearchHitCount: document.getElementById('record-search-hit-count'),
+    recordSearchResultsTable: document.getElementById('record-search-results-table'),
+
+    gradeManagementBackButton: document.getElementById('grade-management-back-button'),
 
     bgmPlayer: document.getElementById('bgm-player')
 };
 
 // ゲームの状態
 const state = {
-    gameMode: null, // 'practice_word_typing_audio', 'practice_word_typing_no_audio', 'practice_meaning_recall_audio', 'practice_meaning_recall_no_audio', 'test_meaning_choice', 'test_spelling'
+    gameMode: null, // 'practice_word_typing_word_audio', 'practice_word_typing_meaning_audio', 'practice_word_typing_no_audio', 'practice_meaning_recall_meaning_audio', 'practice_meaning_recall_word_audio', 'practice_meaning_recall_no_audio', 'test_meaning_choice', 'test_spelling'
     currentCourse: null,
     currentWords: [], // 現在のゲームで使用する単語リスト
     currentWordIndex: 0,
@@ -131,14 +176,18 @@ const state = {
     labelStats: {}, // ラベルごとの正誤記録
     personalBests: {}, // 自己ベスト
     selectedLabels: new Set(), // 選択されたラベル
-    filterType: 'all', // 'all', 'unseen', 'mistakes', 'custom'
+    filterType: 'all', // 'all', 'unseen', 'mistakes', 'custom', 'correct'
     customFilter: { incorrectCount: 0, accuracyMin: 0, accuracyMax: 100 },
-    isBgmPlaying: false // BGMが再生中かどうかを追跡する新しい状態変数
+    isBgmPlaying: false, // BGMが再生中かどうかを追跡する新しい状態変数
+    searchSelectedLabels: new Set() // 記録検索用の選択されたラベル
 };
 
 let allWordsData = {}; // 全ての単語データ
 let courseLabels = {}; // コースごとのラベル
-let historyChart;
+let typingDailyChart;
+let meaningTestChart;
+let spellingTestChart;
+let bgmFilesList = []; // ADDED: Global variable to store BGM file paths
 
 // =================================================================
 // 関数定義
@@ -157,7 +206,7 @@ function shuffleArray(array) {
 function containsJapaneseCharacters(text) {
     if (!text) return false;
     // ひらがな、カタカナのUnicode範囲をチェック
-    return /[぀-ゟ゠-ヿ]/.test(text);
+    return /[\u3040-\u309F\u30A0-\u30FF]/.test(text);
 }
 
 // 電子音を生成する関数
@@ -221,9 +270,26 @@ function playWordAudio(word) {
     });
 }
 
+function speakMeaning(text) {
+    if (!('speechSynthesis' in window)) {
+        console.warn("Speech Synthesis API not supported in this browser.");
+        createBeep(660, 0.1, 0.3); // 代替電子音
+        return;
+    }
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'ja-JP'; // 日本語に設定
+    utterance.rate = 1.0; // 読み上げ速度
+    utterance.volume = 1.0; // 音量
+    speechSynthesis.speak(utterance);
+}
+
 function startRandomBGM() {
     if (state.isBgmPlaying) return;
-    const bgmFiles = ['bgm/h.mp3', 'bgm/ゲームの旅路.mp3'];
+    const bgmFiles = bgmFilesList; // MODIFIED: Use dynamically loaded BGM files
+    if (bgmFiles.length === 0) {
+        console.warn("No BGM files available.");
+        return;
+    }
     const selectedBGM = bgmFiles[Math.floor(Math.random() * bgmFiles.length)];
     if (elements.bgmPlayer) {
         elements.bgmPlayer.src = selectedBGM;
@@ -245,7 +311,7 @@ function stopBGM() {
 function showScreen(screenElement) {
     const screens = [
         elements.loadingScreen, elements.startScreen, elements.modeSelectionScreen,
-        elements.gameScreen, elements.testScreen, elements.resultScreen, elements.historyScreen
+        elements.gameScreen, elements.testScreen, elements.resultScreen, elements.gradeManagementScreen
     ];
     screens.forEach(screen => {
         screen.classList.toggle('active', screen === screenElement);
@@ -256,9 +322,16 @@ function showScreen(screenElement) {
 async function loadWordsData() {
     showScreen(elements.loadingScreen);
     try {
-        const response = await fetch('words.json');
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        allWordsData = await response.json();
+        const [wordsResponse, bgmResponse] = await Promise.all([
+            fetch('words.json'),
+            fetch('bgm_files.json') // ADDED: Fetch BGM file list
+        ]);
+
+        if (!wordsResponse.ok) throw new Error(`HTTP error! status: ${wordsResponse.status} for words.json`);
+        if (!bgmResponse.ok) throw new Error(`HTTP error! status: ${bgmResponse.status} for bgm_files.json`);
+        
+        allWordsData = await wordsResponse.json();
+        bgmFilesList = await bgmResponse.json(); // ADDED: Store BGM file list
 
         for (const courseName in allWordsData) {
             let courseContainsJapanese = false;
@@ -277,7 +350,6 @@ async function loadWordsData() {
 
                 if (containsJapaneseCharacters(word.word)) {
                     courseContainsJapanese = true;
-                    break;
                 }
             }
             // Add a property to the course object indicating if it allows non-Japanese typing
@@ -290,76 +362,94 @@ async function loadWordsData() {
         loadSettings(); // Load settings after user data and course population
         showScreen(elements.startScreen);
     } catch (error) {
-        console.error('Failed to load words.json:', error);
+        console.error('Failed to load initial data:', error);
         elements.loadingScreen.innerHTML = '<p style="color: red;">データの読み込みに失敗しました。ページをリロードしてください。</p>';
     }
 }
 
-function populateCourseSelect() {
-    elements.contentSelect.innerHTML = '';
-    courseLabels = {};
+function populateCourseSelect(selectElement = elements.contentSelect) {
+    selectElement.innerHTML = '';
+    // Only populate courseLabels once for the main contentSelect
+    if (selectElement === elements.contentSelect) {
+        courseLabels = {};
+    }
+    
     for (const courseName in allWordsData) {
         const option = document.createElement('option');
         option.value = courseName;
         option.textContent = courseName.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-        elements.contentSelect.appendChild(option);
-        const labels = new Set();
-        allWordsData[courseName].forEach(word => {
-            // Prioritize word.labels (array) if it exists and is an array
-            if (word.labels && Array.isArray(word.labels)) {
-                word.labels.forEach(label => labels.add(label));
-            } else if (word.label) { // Fallback to word.label (singular) if labels array not found
-                if (Array.isArray(word.label)) {
-                    word.label.forEach(label => labels.add(label));
-                } else {
-                    labels.add(word.label);
+        selectElement.appendChild(option);
+        
+        if (selectElement === elements.contentSelect) {
+            const labels = new Set();
+            allWordsData[courseName].forEach(word => {
+                // word.labels が常に配列であることを前提とする
+                if (word.labels && Array.isArray(word.labels)) {
+                    word.labels.forEach(label => labels.add(label));
+                    console.log(`  Processing word: ${word.word}, labels:`, word.labels); // ADDED MORE DETAILED DEBUG LOG
                 }
-            }
-        });
-        courseLabels[courseName] = Array.from(labels).sort();
+            });
+            courseLabels[courseName] = Array.from(labels).sort();
+            console.log(`Course: ${courseName}, Collected Labels:`, courseLabels[courseName]); // ADDED DEBUG LOG
+        }
     }
-    console.log("Populated courseLabels:", courseLabels); // Debug log
-    if (elements.contentSelect.options.length > 0) {
-        // Removed default selection and label population from here.
-        // This will now be handled by loadSettings.
+    if (selectElement.options.length > 0) {
+        // Handled by loadSettings or specific tab logic
     }
 }
 
-function populateLabelSelection(courseName) {
-    elements.labelSelectionContainer.innerHTML = '';
-    // state.selectedLabels.clear(); // REMOVED: Do not clear here, it should be managed by loadSettings or user interaction
+function populateLabelSelection(courseName, containerElement = elements.labelSelectionContainer, selectedLabelsSet = state.selectedLabels) {
+    containerElement.innerHTML = '';
     const labels = courseLabels[courseName] || [];
+    console.log(`populateLabelSelection for course: ${courseName}, selectedLabelsSet:`, Array.from(selectedLabelsSet)); // ADDED DEBUG LOG
     labels.forEach(label => {
         const div = document.createElement('div');
         div.className = 'label-checkbox-item';
         const input = document.createElement('input');
         input.type = 'checkbox';
-        input.id = `label-${label}`;
+        input.id = `label-${label}-${containerElement.id}`; // Unique ID for each label checkbox
         input.value = label;
-        input.checked = state.selectedLabels.has(label); // Set checked based on loaded state
-        input.addEventListener('change', updateSelectedLabels);
+        const isChecked = selectedLabelsSet.has(label); // Capture the checked state
+        input.checked = isChecked; // Set the initial checked state
+        console.log(`  Label: "${label}", isChecked: ${isChecked}`); // ADDED DEBUG LOG for each label
+        input.addEventListener('change', (event) => {
+            const label = event.target.value;
+            const isChecked = event.target.checked;
+            if (containerElement === elements.labelSelectionContainer) {
+                if (isChecked) {
+                    state.selectedLabels.add(label);
+                } else {
+                    state.selectedLabels.delete(label);
+                }
+                saveSettings();
+            } else if (containerElement === elements.searchLabelSelectionContainer) {
+                if (isChecked) {
+                    state.searchSelectedLabels.add(label);
+                } else {
+                    state.searchSelectedLabels.delete(label);
+                }
+                // 検索フィルターは一時的なのでsaveSettingsは不要
+            }
+        });
         const labelElement = document.createElement('label');
-        labelElement.htmlFor = `label-${label}`;
+        labelElement.htmlFor = `label-${label}-${containerElement.id}`;
         labelElement.textContent = label;
         div.appendChild(input);
         div.appendChild(labelElement);
-        elements.labelSelectionContainer.appendChild(div);
-        // state.selectedLabels.add(label); // REMOVED: Do not add all labels here
+        containerElement.appendChild(div);
     });
 }
 
-function updateSelectedLabels() {
-    state.selectedLabels.clear();
-    elements.labelSelectionContainer.querySelectorAll('input[type="checkbox"]:checked').forEach(checkbox => {
-        state.selectedLabels.add(checkbox.value);
-    });
-    saveSettings();
-}
+
 
 function loadUserData() {
     try {
         const savedHistory = localStorage.getItem('typingComboHistory');
-        if (savedHistory) state.history = JSON.parse(savedHistory);
+        if (savedHistory) {
+            const loadedHistory = JSON.parse(savedHistory);
+            const oneWeekAgo = Date.now() - (7 * 24 * 60 * 60 * 1000); // 7 days in milliseconds
+            state.history = loadedHistory.filter(entry => new Date(entry.date).getTime() > oneWeekAgo);
+        }
         
         const savedDailyStats = localStorage.getItem('typingComboDailyStats');
         if (savedDailyStats) state.dailyStats = JSON.parse(savedDailyStats);
@@ -385,7 +475,9 @@ function loadUserData() {
 
 function saveUserData() {
     try {
-        localStorage.setItem('typingComboHistory', JSON.stringify(state.history));
+        const oneWeekAgo = Date.now() - (7 * 24 * 60 * 60 * 1000); // 7 days in milliseconds
+        const filteredHistory = state.history.filter(entry => new Date(entry.date).getTime() > oneWeekAgo);
+        localStorage.setItem('typingComboHistory', JSON.stringify(filteredHistory));
         localStorage.setItem('typingComboDailyStats', JSON.stringify(state.dailyStats));
         localStorage.setItem('typingComboWordStats', JSON.stringify(state.wordStats));
         localStorage.setItem('typingComboLabelStats', JSON.stringify(state.labelStats));
@@ -428,7 +520,7 @@ function loadSettings() {
 
             // Apply loaded settings to UI
             elements.contentSelect.value = state.currentCourse;
-            populateLabelSelection(state.currentCourse); // Re-populate labels based on loaded course
+            populateLabelSelection(state.currentCourse);
 
             // Update filter radio buttons
             document.querySelectorAll('input[name="filter-type"]').forEach(radio => {
@@ -570,16 +662,50 @@ function nextWord() {
     state.currentWord = state.currentWords[state.currentWordIndex];
     state.currentInput = '';
     elements.typingInput.value = '';
-    // 意味から語句タイピングモードの場合、単語のスペルを最初は表示しない
-    if (state.gameMode === 'practice_meaning_recall_audio' || state.gameMode === 'practice_meaning_recall_no_audio') {
-        elements.wordDisplay.textContent = ''; // 単語表示をクリア
-        
-    } else {
-        elements.wordDisplay.textContent = state.currentWord.word;
-        elements.inputDisplay.innerHTML = `<span class="untyped">${state.currentWord.word}</span>`;
+
+    // Clear all displays initially
+    elements.wordDisplay.textContent = '';
+    elements.meaningDisplay.textContent = '';
+    elements.inputDisplay.innerHTML = ''; // Clear input display content
+
+    // Set displays based on game mode
+    let hintText = '';
+    switch (state.gameMode) {
+        case 'practice_word_typing_word_audio':
+        case 'practice_word_typing_no_audio':
+            elements.meaningDisplay.textContent = state.currentWord.meaning;
+            hintText = state.currentWord.word;
+            break;
+        case 'practice_word_typing_meaning_audio': // NEW MODE: Word Typing with Meaning Audio
+            elements.meaningDisplay.textContent = state.currentWord.meaning; // Display meaning
+            hintText = state.currentWord.word; // Type the word
+            break;
+        case 'practice_meaning_recall_meaning_audio':
+        case 'practice_meaning_recall_word_audio':
+        case 'practice_meaning_recall_no_audio':
+            elements.meaningDisplay.textContent = state.currentWord.meaning;
+            hintText = '_ '.repeat(state.currentWord.word.length).trim();
+            break;
     }
-    elements.meaningDisplay.textContent = state.gameMode.includes('meaning') ? state.currentWord.meaning : '';
-    if (state.gameMode.includes('audio')) playWordAudio(state.currentWord);
+
+    // Create individual spans for each character in the hintText
+    for (let i = 0; i < hintText.length; i++) {
+        const charSpan = document.createElement('span');
+        charSpan.textContent = hintText[i];
+        charSpan.classList.add('hint'); // All characters start as hint
+        elements.inputDisplay.appendChild(charSpan);
+    }
+
+    // Play audio based on the specific game mode
+    if (state.gameMode === 'practice_word_typing_word_audio') {
+        playWordAudio(state.currentWord);
+    } else if (state.gameMode === 'practice_word_typing_meaning_audio') {
+        speakMeaning(state.currentWord.meaning);
+    } else if (state.gameMode === 'practice_meaning_recall_meaning_audio') {
+        speakMeaning(state.currentWord.meaning);
+    } else if (state.gameMode === 'practice_meaning_recall_word_audio') {
+        playWordAudio(state.currentWord);
+    }
 }
 
 function endGame() {
@@ -620,32 +746,29 @@ function endGame() {
 
 function handleTypingInput(event) {
     if (!state.currentWord) return;
-    const currentWordText = state.currentWord.word; // The target English word
+    const targetText = state.currentWord.word; // Always typing the word now
 
     const newInputValue = elements.typingInput.value;
-    const oldInputLength = state.currentInput.length;
 
     // Handle backspace/deletion
-    if (newInputValue.length < oldInputLength) {
+    if (newInputValue.length < state.currentInput.length) {
         state.currentInput = newInputValue;
-    } else if (newInputValue.length > oldInputLength) {
-        // Handle new character input
-        const newChar = newInputValue[newInputValue.length - 1]; // Get the last typed character
-        const expectedChar = currentWordText[oldInputLength]; // Expected character at current position
+    } else if (newInputValue.length > state.currentInput.length) {
+        const newChar = newInputValue[newInputValue.length - 1];
+        const expectedChar = targetText[state.currentInput.length];
 
-        playSound('key'); // Play key sound for any new input
-        state.totalTypedChars++; // 総入力文字数（キープレスごと）
+        playSound('key');
 
-        if (newChar === expectedChar) {
-            state.currentInput = newInputValue; // Accept the character
-            state.correctTypedChars++; // 正しく入力された文字数をカウント
-            state.combo++; // コンボをインクリメント
+        if (newChar.toLowerCase() === expectedChar.toLowerCase() ||
+            (expectedChar === '〜' && (newChar === '~' || newChar === '^' || newChar === '-'))) {
+            state.currentInput = newInputValue; // Only update if correct
+            state.totalTypedChars++;
+            state.correctTypedChars++;
+            state.combo++;
             if (state.combo > state.maxCombo) state.maxCombo = state.combo;
 
-            // コンボアニメーション
             triggerAnimation(elements.comboDisplay, 'combo-animate');
 
-            // タイムボーナスロジック
             if (state.combo > 0 && state.combo % 20 === 0) {
                 let bonusSeconds = 0;
                 if (state.combo === 20) {
@@ -656,78 +779,55 @@ function handleTypingInput(event) {
                     bonusSeconds = 3;
                 }
                 if (bonusSeconds > 0) {
-                    state.timer = Math.max(0, state.timer + bonusSeconds); // ボーナス秒数を加算
-                    triggerAnimation(elements.timerDisplay, 'timer-bonus-animate'); // タイマーアニメーションをトリガー
+                    state.timer = Math.max(0, state.timer + bonusSeconds);
+                    triggerAnimation(elements.timerDisplay, 'timer-bonus-animate');
                 }
             }
 
-            if (state.combo > 0 && state.combo % 10 === 0) playSound('combo'); // 既存のコンボ音
+            if (state.combo > 0 && state.combo % 10 === 0) playSound('combo');
         } else {
-            // Incorrect character typed
             playSound('incorrect');
-            state.missCount++; // ミス数をインクリメント
-            state.combo = 0; // コンボをリセット
-
-            // Revert input field to the last correct state
-            elements.typingInput.value = state.currentInput; // 間違った文字を反映させない
+            state.missCount++;
+            state.combo = 0;
+            // Revert the input field to the last correct state
+            elements.typingInput.value = state.currentInput;
+            // Do NOT update state.currentInput here. It should remain correct.
         }
     }
 
     // Update display based on current state.currentInput
-    let wordDisplayHtml = ''; // For wordDisplay
-    let isDisplayIncorrect = false; // For visual highlighting
+    let displayHtml = '';
+    const isDirectWordTypingMode = state.gameMode === 'practice_word_typing_word_audio' || state.gameMode === 'practice_word_typing_no_audio';
+    const isMeaningRecallMode = state.gameMode === 'practice_meaning_recall_audio' || state.gameMode === 'practice_meaning_recall_no_audio';
 
-    for (let i = 0; i < currentWordText.length; i++) {
-        const char = currentWordText[i];
-        
-        // For meaning-to-word typing, reveal characters in wordDisplay
-        if (state.gameMode === 'practice_meaning_recall_audio' || state.gameMode === 'practice_meaning_recall_no_audio') {
-            if (i < state.currentInput.length && state.currentInput[i] === char) {
-                wordDisplayHtml += `<span class="revealed-char">${char}</span>`;
-            } else {
-                wordDisplayHtml += `<span class="hidden-char">_</span>`; // Use underscore for hidden chars
+    for (let i = 0; i < targetText.length; i++) {
+        const char = targetText[i];
+        if (i < state.currentInput.length) {
+            // Character has been correctly typed
+            displayHtml += `<span class="correct char-correct-animate">${isMeaningRecallMode ? state.currentInput[i] : char}</span>`;
+        } else {
+            // Character is untyped
+            if (isMeaningRecallMode) {
+                displayHtml += `<span class="hint">_</span>`;
+            } else if (isDirectWordTypingMode) {
+                displayHtml += `<span class="untyped">${char}</span>`;
             }
         }
     }
-
-    // Update wordDisplay for meaning-to-word typing modes
-    if (state.gameMode === 'practice_meaning_recall_audio' || state.gameMode === 'practice_meaning_recall_no_audio') {
-        elements.wordDisplay.innerHTML = wordDisplayHtml;
-        // 意味から語句タイピングモードではinputDisplayを更新しない
-        elements.inputDisplay.innerHTML = ''; // Clear input display for this mode
-    } else {
-        // Other modes still show the full word and input feedback
-        let displayHtml = '';
-        let isDisplayIncorrectForOtherModes = false;
-        for (let i = 0; i < currentWordText.length; i++) {
-            const char = currentWordText[i];
-            let segmentClass = 'untyped';
-            if (i < state.currentInput.length) {
-                if (state.currentInput[i] === char && !isDisplayIncorrectForOtherModes) {
-                    segmentClass = 'correct';
-                } else {
-                    segmentClass = 'incorrect';
-                    isDisplayIncorrectForOtherModes = true;
-                }
-            }
-            displayHtml += `<span class="${segmentClass}">${char}</span>`;
-        }
-        elements.inputDisplay.innerHTML = displayHtml;
-    }
+    elements.inputDisplay.innerHTML = displayHtml;
 
     // Check if word is completed correctly
-    if (state.currentInput === currentWordText) {
-        playSound('correct'); // Play correct sound for word completion
-        state.score += 100 + state.combo * 10; // Score based on combo
-        updateDisplay(); // Update score, combo, miss
-        updateStats(state.currentWord, true); // Update stats for correct word
+    if (state.currentInput.toLowerCase() === targetText.toLowerCase()) {
+        playSound('correct');
+        state.score += 100 + state.combo * 10;
+        updateDisplay();
+        updateStats(state.currentWord, true);
 
-        // 単語正解アニメーション
         triggerAnimation(elements.wordDisplay, 'word-correct-animate');
 
-        nextWord(); // Move to next word
+        nextWord();
     }
-    updateDisplay(); // Update score, combo, miss after each key press
+    updateDisplay();
 }
 
 // --- テストロジック ---
@@ -783,17 +883,9 @@ function startTest(mode) {
         case 'custom':
             filteredWords = filteredWords.filter(word => {
                 const stats = state.wordStats[word.word] || { correct: 0, incorrect: 0 };
-                let correctCount, incorrectCount;
-                if (state.testMode === 'spelling') {
-                    correctCount = stats.spellingTestCorrect;
-                    incorrectCount = stats.spellingTestIncorrect;
-                } else if (state.testMode === 'test_meaning_choice') {
-                    correctCount = stats.meaningChoiceTestCorrect;
-                    incorrectCount = stats.meaningChoiceTestIncorrect;
-                } else {
-                    correctCount = stats.correct;
-                    incorrectCount = stats.incorrect;
-                }
+                // Use general correct/incorrect counts for consistency across all modes
+                const correctCount = stats.correct;
+                const incorrectCount = stats.incorrect;
                 const totalAttempts = correctCount + incorrectCount;
                 const accuracy = totalAttempts > 0 ? (correctCount / totalAttempts) * 100 : 100;
                 const incorrectCountMatch = incorrectCount >= state.customFilter.incorrectCount;
@@ -923,6 +1015,15 @@ function handleMeaningChoice(event) {
     }, 1500);
 }
 
+function updateResultScreenVisibility(isTestMode) {
+    document.querySelectorAll('.practice-mode-only').forEach(el => {
+        el.style.display = isTestMode ? 'none' : 'flex';
+    });
+    document.querySelectorAll('.test-mode-only').forEach(el => {
+        el.style.display = isTestMode ? 'flex' : 'none';
+    });
+}
+
 function endTest() {
     stopBGM(); // Stop BGM when test ends
     state.testEndTime = Date.now();
@@ -944,12 +1045,16 @@ function endTest() {
         };
         state.history.push(resultData);
         saveUserData();
-        alert(`テスト終了！\n正解: ${state.testCorrectCount}, 不正解: ${state.testIncorrectCount}\n正答率: ${accuracy.toFixed(2)}%`);
-    } else {
-        alert('テストが中断されました。結果は保存されません。');
     }
 
-    showScreen(elements.startScreen);
+    // Display results on the result screen
+    elements.resultCorrectCount.textContent = state.testCorrectCount;
+    elements.resultIncorrectCount.textContent = state.testIncorrectCount;
+    elements.resultAccuracy.textContent = `${accuracy.toFixed(2)}%`;
+    elements.resultDuration.textContent = `${duration.toFixed(1)}秒`;
+
+    updateResultScreenVisibility(true); // Show test-specific elements, hide practice-specific
+    showScreen(elements.resultScreen);
 }
 
 // --- 表示更新・統計 ---
@@ -997,6 +1102,37 @@ function updateDisplay() {
     elements.timerDisplay.textContent = state.timer;
 }
 
+function renderPersonalBests(containerElement) {
+    let html = '';
+    const bests = state.personalBests;
+
+    // タイピングモードの自己ベスト
+    if (bests.practice_typing) {
+        html += `
+            <div class="result-item">
+                <span>最高スコ�� (タイピング)</span>
+                <span>${bests.practice_typing.score || 0}</span>
+            </div>
+            <div class="result-item">
+                <span>最高WPM (タイピング)</span>
+                <span>${(bests.practice_typing.wpm || 0).toFixed(2)}</span>
+            </div>
+            <div class="result-item">
+                <span>最大コンボ (タイピング)</span>
+                <span>${bests.practice_typing.maxCombo || 0}</span>
+            </div>
+        `;
+    }
+
+    // テストモードの自己ベスト (必要であれば追加)
+    // 例: スペルテストの最高正解数など
+
+    if (html === '') {
+        html = '<p>まだ自己最高記録がありません。</p>';
+    }
+    containerElement.innerHTML = html;
+}
+
 function startTimer() {
     state.timer = 60;
     updateDisplay();
@@ -1007,12 +1143,12 @@ function startTimer() {
     }, 1000);
 }
 
-function initHistoryChart() {
-    if (historyChart) {
-        historyChart.destroy();
+function initChart(canvasElement, chartInstance) {
+    if (chartInstance) {
+        chartInstance.destroy();
     }
-    const ctx = elements.historyChartCanvas.getContext('2d');
-    historyChart = new Chart(ctx, {
+    const ctx = canvasElement.getContext('2d');
+    return new Chart(ctx, {
         type: 'bar',
         data: { labels: [], datasets: [] },
         options: { 
@@ -1021,50 +1157,40 @@ function initHistoryChart() {
             scales: { 
                 y: { beginAtZero: true },
                 x: { ticks: { autoSkip: false, maxRotation: 70, minRotation: 70 } }
-            } 
+            }
         }
     });
 }
 
-function updateHistoryView(view = 'recent') {
-    if (!elements.historyScreen.classList.contains('active')) return;
+function updateGradeManagementView(mainTab = 'history') {
+    // メインタブのアクティブ状態を更新
+    const mainTabs = [elements.tabHistory, elements.tabTyping, elements.tabTest, elements.tabRecordSearch];
+    mainTabs.forEach(tab => tab.classList.remove('active'));
+    const activeMainTab = mainTabs.find(tab => tab.dataset.tab === mainTab);
+    if (activeMainTab) activeMainTab.classList.add('active');
 
-    // タブのアクティブ状態を更新
-    const tabs = [elements.showRecentBtn, elements.showDailyBtn, elements.showBestsBtn, elements.showLabelStatsBtn];
-    tabs.forEach(tab => tab.classList.remove('active'));
-    const activeTab = view === 'recent' ? elements.showRecentBtn :
-                      view === 'daily' ? elements.showDailyBtn :
-                      view === 'bests' ? elements.showBestsBtn :
-                      elements.showLabelStatsBtn;
-    activeTab.classList.add('active');
+    // 各タブコンテンツの表示を制御
+    elements.historyTabContent.classList.remove('active');
+    elements.typingTabContent.classList.remove('active');
+    elements.testTabContent.classList.remove('active');
+    elements.recordSearchTabContent.classList.remove('active');
 
-    // コンテナの表示を制御
-    elements.historyTableContainer.style.display = 'none';
-    elements.personalBestsContainer.style.display = 'none';
-    elements.historyChartCanvas.parentElement.style.display = 'none';
-    elements.modeFilterContainer.style.display = 'none';
-
-    const filterValue = document.querySelector('input[name="history-mode-filter"]:checked').value;
-
-    switch (view) {
-        case 'recent':
-            elements.historyTableContainer.style.display = 'block';
-            elements.modeFilterContainer.style.display = 'flex';
-            renderRecentHistory(filterValue);
+    switch (mainTab) {
+        case 'history':
+            elements.historyTabContent.classList.add('active');
+            renderRecentHistory(document.querySelector('input[name="history-mode-filter"]:checked').value);
             break;
-        case 'daily':
-            elements.historyChartCanvas.parentElement.style.display = 'block';
-            elements.historyTableContainer.style.display = 'block';
-            renderDailyStats();
+        case 'typing':
+            elements.typingTabContent.classList.add('active');
+            renderTypingTab();
             break;
-        case 'bests':
-            elements.personalBestsContainer.style.display = 'block';
-            renderPersonalBests();
+        case 'test':
+            elements.testTabContent.classList.add('active');
+            updateTestSubTab('meaning-test'); // デフォルトで意味テストサブタブを表示
             break;
-        case 'label':
-            elements.historyChartCanvas.parentElement.style.display = 'block';
-            elements.historyTableContainer.style.display = 'block';
-            renderLabelStats();
+        case 'record-search':
+            elements.recordSearchTabContent.classList.add('active');
+            renderRecordSearchTab();
             break;
     }
 }
@@ -1106,59 +1232,63 @@ function renderRecentHistory(modeFilter) {
     elements.historyTableContainer.innerHTML = html;
 }
 
-function renderDailyStats() {
-    const dailyData = {};
+function renderTypingTab() {
+    // 自己最高記録
+    renderPersonalBests(elements.typingPersonalBestsContainer);
 
-    state.history.forEach(h => {
+    // 日別平均とその推移の折れ線グラフ
+    const dailyData = {};
+    state.history.filter(h => h.mode === 'practice_typing').forEach(h => {
         const date = new Date(h.date).toLocaleDateString();
         if (!dailyData[date]) {
             dailyData[date] = {
-                typingWpm: [],
-                typingAccuracy: [],
-                testAccuracy: [],
+                wpm: [],
+                accuracy: [],
                 totalPlays: 0
             };
         }
         dailyData[date].totalPlays++;
-        if (h.mode === 'practice_typing') {
-            if(h.wpm) dailyData[date].typingWpm.push(h.wpm);
-            if(h.accuracy) dailyData[date].typingAccuracy.push(h.accuracy);
-        } else { // Test modes
-            if(h.accuracy) dailyData[date].testAccuracy.push(h.accuracy);
-        }
+        if(h.wpm) dailyData[date].wpm.push(h.wpm);
+        if(h.accuracy) dailyData[date].accuracy.push(h.accuracy);
     });
 
     const sortedDates = Object.keys(dailyData).sort((a, b) => new Date(a) - new Date(b));
     
     const avgWpm = sortedDates.map(date => {
-        const wpmList = dailyData[date].typingWpm;
+        const wpmList = dailyData[date].wpm;
         return wpmList.length > 0 ? wpmList.reduce((a, b) => a + b, 0) / wpmList.length : 0;
     });
 
-    const avgTestAccuracy = sortedDates.map(date => {
-        const accList = dailyData[date].testAccuracy;
+    const avgAccuracy = sortedDates.map(date => {
+        const accList = dailyData[date].accuracy;
         return accList.length > 0 ? accList.reduce((a, b) => a + b, 0) / accList.length : 0;
     });
 
-    initHistoryChart();
-    historyChart.data.labels = sortedDates;
-    historyChart.data.datasets = [
+    typingDailyChart = initChart(elements.typingDailyChartCanvas, typingDailyChart);
+    typingDailyChart.data.labels = sortedDates;
+    typingDailyChart.data.datasets = [
         {
-            label: '平均WPM (タイピング)',
+            label: '平均WPM',
             data: avgWpm,
             borderColor: 'rgb(75, 192, 192)',
             backgroundColor: 'rgba(75, 192, 192, 0.5)',
+            type: 'line', // 折れ線グラフ
+            fill: false,
             yAxisID: 'yWpm',
+            tension: 0.1
         },
         {
-            label: '平均正解率 (テスト)',
-            data: avgTestAccuracy,
+            label: '平均正解率 (%)',
+            data: avgAccuracy,
             borderColor: 'rgb(255, 159, 64)',
             backgroundColor: 'rgba(255, 159, 64, 0.5)',
+            type: 'line', // 折れ線グラフ
+            fill: false,
             yAxisID: 'yAccuracy',
+            tension: 0.1
         }
     ];
-    historyChart.options.scales = {
+    typingDailyChart.options.scales = {
         yWpm: {
             type: 'linear',
             display: true,
@@ -1175,9 +1305,9 @@ function renderDailyStats() {
             grid: { drawOnChartArea: false }
         }
     };
-    historyChart.update();
+    typingDailyChart.update();
 
-    let html = '<table><thead><tr><th>日付</th><th>プレイ回数</th><th>平均WPM</th><th>平均正解率(テスト)</th></tr></thead><tbody>';
+    let html = '<table><thead><tr><th>日付</th><th>プレイ回数</th><th>平均WPM</th><th>平均正解率</th></tr></thead><tbody>';
     if (sortedDates.length === 0) {
         html += '<tr><td colspan="4">データがありません。</td></tr>';
     } else {
@@ -1187,101 +1317,362 @@ function renderDailyStats() {
                     <td>${date}</td>
                     <td>${dailyData[date].totalPlays}</td>
                     <td>${avgWpm[i] > 0 ? avgWpm[i].toFixed(1) : 'N/A'}</td>
-                    <td>${avgTestAccuracy[i] > 0 ? avgTestAccuracy[i].toFixed(1) + '%' : 'N/A'}</td>
+                    <td>${avgAccuracy[i] > 0 ? avgAccuracy[i].toFixed(1) + '%' : 'N/A'}</td>
                 </tr>
             `;
         });
     }
     html += '</tbody></table>';
-    elements.historyTableContainer.innerHTML = html;
+    elements.typingDailyTableContainer.innerHTML = html;
 }
 
-function renderPersonalBests() {
-    let html = '<h3>自己ベスト</h3>';
-    const bests = state.personalBests;
-    if (Object.keys(bests).length === 0) {
-        html += '<p>まだ記録がありません。</p>';
-    } else {
-        const groupedBests = {};
-        for (const modeKey in bests) {
-            const baseMode = getModeDisplayName(modeKey);
-            if (!groupedBests[baseMode]) {
-                groupedBests[baseMode] = {};
-            }
-            // Merge stats, preferring higher values
-            for(const stat in bests[modeKey]) {
-                if (!groupedBests[baseMode][stat] || bests[modeKey][stat] > groupedBests[baseMode][stat]) {
-                    groupedBests[baseMode][stat] = bests[modeKey][stat];
-                }
-            }
-        }
+function updateTestSubTab(subTab = 'meaning-test') {
+    const subTabs = [elements.subTabMeaningTest, elements.subTabSpellingTest];
+    subTabs.forEach(tab => tab.classList.remove('active'));
+    const activeSubTab = subTabs.find(tab => tab.dataset.subTab === subTab);
+    if (activeSubTab) activeSubTab.classList.add('active');
 
-        for (const mode in groupedBests) {
-            html += `<h4>${mode}</h4>`;
-            html += '<ul>';
-            if (groupedBests[mode].score) html += `<li>最高スコア: ${groupedBests[mode].score}</li>`;
-            if (groupedBests[mode].wpm) html += `<li>最高WPM: ${groupedBests[mode].wpm.toFixed(1)}</li>`;
-            if (groupedBests[mode].maxCombo) html += `<li>最大コンボ: ${groupedBests[mode].maxCombo}</li>`;
-            html += '</ul>';
-        }
+    elements.meaningTestContent.classList.remove('active');
+    elements.spellingTestContent.classList.remove('active');
+
+    switch (subTab) {
+        case 'meaning-test':
+            elements.meaningTestContent.classList.add('active');
+            renderTestMeaningTab();
+            break;
+        case 'spelling-test':
+            elements.spellingTestContent.classList.add('active');
+            renderTestSpellingTab();
+            break;
     }
-    elements.personalBestsContainer.innerHTML = html;
 }
 
-function renderLabelStats() {
-    let html = '<table><thead><tr><th>ラベル</th><th>正解</th><th>不正解</th><th>正解率</th></tr></thead><tbody>';
-    const sortedLabels = Object.entries(state.labelStats).sort((a, b) => a[0].localeCompare(b[0]));
+function renderTestMeaningTab() {
+    populateCourseSelect(elements.testCourseSelectMeaning);
+    elements.testCourseSelectMeaning.addEventListener('change', renderTestMeaningTab); // Re-render on course change
+
+    const selectedCourse = elements.testCourseSelectMeaning.value;
+    const wordsInCourse = allWordsData[selectedCourse] || [];
+
+    const labelStats = {};
+    wordsInCourse.forEach(word => {
+        // Ensure word.labels is an array
+        const labels = Array.isArray(word.labels) ? word.labels : (word.label ? [word.label] : []);
+
+        const stats = state.wordStats[word.word] || { meaningChoiceTestCorrect: 0, meaningChoiceTestIncorrect: 0 };
+        labels.forEach(label => {
+            if (!labelStats[label]) {
+                labelStats[label] = { correct: 0, incorrect: 0, unseen: 0, total: 0 };
+            }
+            labelStats[label].correct += stats.meaningChoiceTestCorrect;
+            labelStats[label].incorrect += stats.meaningChoiceTestIncorrect;
+            labelStats[label].total++; // Count total words with this label in the course
+            if (stats.correct === 0 && stats.incorrect === 0) {
+                labelStats[label].unseen++;
+            }
+        });
+    });
+
+    let tableHtml = '<table><thead><tr><th>ラベル</th><th>出題数</th><th>正解数</th><th>未出題問数</th><th>正答率</th></tr></thead><tbody>';
+    const sortedLabels = Object.keys(labelStats).sort();
 
     if (sortedLabels.length === 0) {
-        html += '<tr><td colspan="4">ラベルデータがありません。</td></tr>';
+        tableHtml += '<tr><td colspan="5">データがありません。</td></tr>';
     } else {
-        sortedLabels.forEach(([label, stats]) => {
-            const total = stats.correct + stats.incorrect;
-            const accuracy = total > 0 ? (stats.correct / total) * 100 : 0;
-            html += `
+        sortedLabels.forEach(label => {
+            const stats = labelStats[label];
+            const askedCount = stats.correct + stats.incorrect;
+            const accuracy = askedCount > 0 ? (stats.correct / askedCount) * 100 : 0;
+            tableHtml += `
                 <tr>
                     <td>${label}</td>
+                    <td>${askedCount}</td>
                     <td>${stats.correct}</td>
-                    <td>${stats.incorrect}</td>
+                    <td>${stats.unseen}</td>
                     <td>${accuracy.toFixed(1)}%</td>
                 </tr>
             `;
         });
     }
-    html += '</tbody></table>';
-    elements.historyTableContainer.innerHTML = html;
+    tableHtml += '</tbody></table>';
+    elements.meaningTestLabelStatsTable.innerHTML = tableHtml;
 
-    // Update chart
-    initHistoryChart();
-    const labels = sortedLabels.map(([label, _]) => label);
-    const accuracyData = sortedLabels.map(([_, stats]) => {
-        const total = stats.correct + stats.incorrect;
-        return total > 0 ? (stats.correct / total) * 100 : 0;
+    // 正答率の棒グラフ
+    meaningTestChart = initChart(elements.meaningTestChartCanvas, meaningTestChart);
+    const labels = sortedLabels;
+    const accuracyData = sortedLabels.map(label => {
+        const stats = labelStats[label];
+        const askedCount = stats.correct + stats.incorrect;
+        return askedCount > 0 ? (stats.correct / askedCount) * 100 : 0;
     });
-    historyChart.data.labels = labels;
-    historyChart.data.datasets = [{
-        label: '正解率 (%)',
+
+    meaningTestChart.data.labels = labels;
+    meaningTestChart.data.datasets = [{
+        label: '正答率 (%)',
         data: accuracyData,
-        backgroundColor: 'rgba(255, 159, 64, 0.5)',
-        borderColor: 'rgb(255, 159, 64)',
+        backgroundColor: 'rgba(0, 170, 255, 0.6)',
+        borderColor: 'rgb(0, 170, 255)',
         borderWidth: 1
     }];
-    historyChart.options.scales.y.ticks = {
+    meaningTestChart.options.scales.y.ticks = {
         callback: function(value) {
             return value + '%'
         }
     };
-    historyChart.update();
+    meaningTestChart.update();
 }
+
+function renderTestSpellingTab() {
+    populateCourseSelect(elements.testCourseSelectSpelling);
+    elements.testCourseSelectSpelling.addEventListener('change', renderTestSpellingTab); // Re-render on course change
+
+    const selectedCourse = elements.testCourseSelectSpelling.value;
+    const wordsInCourse = allWordsData[selectedCourse] || [];
+
+    const labelStats = {};
+    wordsInCourse.forEach(word => {
+        // Ensure word.labels is an array
+        const labels = Array.isArray(word.labels) ? word.labels : (word.label ? [word.label] : []);
+
+        const stats = state.wordStats[word.word] || { spellingTestCorrect: 0, spellingTestIncorrect: 0 };
+        labels.forEach(label => {
+            if (!labelStats[label]) {
+                labelStats[label] = { correct: 0, incorrect: 0, unseen: 0, total: 0 };
+            }
+            labelStats[label].correct += stats.spellingTestCorrect;
+            labelStats[label].incorrect += stats.spellingTestIncorrect;
+            labelStats[label].total++; // Count total words with this label in the course
+            if (stats.correct === 0 && stats.incorrect === 0) {
+                labelStats[label].unseen++;
+            }
+        });
+    });
+
+    let tableHtml = '<table><thead><tr><th>ラベル</th><th>出題数</th><th>正解数</th><th>未出題問数</th><th>正答率</th></tr></thead><tbody>';
+    const sortedLabels = Object.keys(labelStats).sort();
+
+    if (sortedLabels.length === 0) {
+        tableHtml += '<tr><td colspan="5">データがありません。</td></tr>';
+    } else {
+        sortedLabels.forEach(label => {
+            const stats = labelStats[label];
+            const askedCount = stats.correct + stats.incorrect;
+            const accuracy = askedCount > 0 ? (stats.correct / askedCount) * 100 : 0;
+            tableHtml += `
+                <tr>
+                    <td>${label}</td>
+                    <td>${stats.correct}</td>
+                    <td>${stats.unseen}</td>
+                    <td>${accuracy.toFixed(1)}%</td>
+                </tr>
+            `;
+        });
+    }
+    tableHtml += '</tbody></table>';
+    elements.spellingTestLabelStatsTable.innerHTML = tableHtml;
+
+    // 正答率の棒グラフ
+    spellingTestChart = initChart(elements.spellingTestChartCanvas, spellingTestChart);
+    const labels = sortedLabels;
+    const accuracyData = sortedLabels.map(label => {
+        const stats = labelStats[label];
+        const askedCount = stats.correct + stats.incorrect;
+        return askedCount > 0 ? (stats.correct / askedCount) * 100 : 0;
+    });
+
+    spellingTestChart.data.labels = labels;
+    spellingTestChart.data.datasets = [{
+        label: '正答率 (%)',
+        data: accuracyData,
+        backgroundColor: 'rgba(0, 170, 255, 0.6)',
+        borderColor: 'rgb(0, 170, 255)',
+        borderWidth: 1
+    }];
+    spellingTestChart.options.scales.y.ticks = {
+        callback: function(value) {
+            return value + '%'
+        }
+    };
+    spellingTestChart.update();
+}
+
+function renderRecordSearchTab() {
+    populateCourseSelect(elements.searchCourseSelect);
+
+    // Initialize or reset search state for labels and filters when the tab is rendered
+    state.searchSelectedLabels = new Set();
+    const currentSearchCourse = elements.searchCourseSelect.value;
+    const allLabelsForSearchCourse = courseLabels[currentSearchCourse] || [];
+    allLabelsForSearchCourse.forEach(label => state.searchSelectedLabels.add(label));
+
+    // Populate labels for the currently selected course in the search tab, with all selected
+    populateLabelSelection(currentSearchCourse, elements.searchLabelSelectionContainer, state.searchSelectedLabels);
+
+    // Ensure all checkboxes are checked in the UI initially
+    elements.searchLabelSelectionContainer.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = true);
+
+    elements.searchFilterAll.checked = true;
+    elements.searchCustomFilterPanel.style.display = 'none';
+    elements.searchIncorrectCountFilter.value = 0;
+    elements.searchAccuracyRangeFilterMin.value = 0;
+    elements.searchAccuracyRangeFilterMax.value = 100;
+    elements.recordSearchHitCount.textContent = '0';
+    elements.recordSearchResultsTable.innerHTML = '';
+
+    // Add event listener for course change in search tab
+    elements.searchCourseSelect.onchange = () => {
+        // When course changes, re-populate labels and select all for search
+        state.searchSelectedLabels.clear();
+        const newSearchCourse = elements.searchCourseSelect.value;
+        const newAllLabelsForSearchCourse = courseLabels[newSearchCourse] || [];
+        newAllLabelsForSearchCourse.forEach(label => state.searchSelectedLabels.add(label));
+
+        populateLabelSelection(newSearchCourse, elements.searchLabelSelectionContainer, state.searchSelectedLabels);
+        elements.searchLabelSelectionContainer.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = true);
+
+        // Also reset filter options for search tab when course changes
+        elements.searchFilterAll.checked = true;
+        elements.searchCustomFilterPanel.style.display = 'none';
+        elements.searchIncorrectCountFilter.value = 0;
+        elements.searchAccuracyRangeFilterMin.value = 0;
+        elements.searchAccuracyRangeFilterMax.value = 100;
+        elements.recordSearchHitCount.textContent = '0';
+        elements.recordSearchResultsTable.innerHTML = '';
+    };
+
+    // Event listeners for search tab specific label controls
+    elements.searchSelectAllLabels.onclick = () => {
+        state.searchSelectedLabels.clear(); // Clear existing selections
+        elements.searchLabelSelectionContainer.querySelectorAll('input[type="checkbox"]').forEach(c => {
+            c.checked = true;
+            state.searchSelectedLabels.add(c.value); // Add all labels to the set
+        });
+    };
+    elements.searchDeselectAllLabels.onclick = () => {
+        elements.searchLabelSelectionContainer.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = false);
+        state.searchSelectedLabels.clear(); // Clear all selections
+    };
+
+    // Event listeners for search tab filter radios
+    document.querySelectorAll('input[name="search-filter-type"]').forEach(radio => {
+        radio.onchange = (event) => {
+            elements.searchCustomFilterPanel.style.display = (event.target.value === 'custom') ? 'flex' : 'none';
+        };
+    });
+
+    // Event listeners for custom filter inputs in search tab
+    elements.searchIncorrectCountFilter.oninput = () => {}; // No state update needed here, only on search
+    elements.searchAccuracyRangeFilterMin.oninput = () => {};
+    elements.searchAccuracyRangeFilterMax.oninput = () => {};
+
+    elements.performRecordSearch.onclick = performRecordSearch;
+}
+
+function performRecordSearch() {
+    const course = elements.searchCourseSelect.value;
+    const selectedLabels = new Set();
+    elements.searchLabelSelectionContainer.querySelectorAll('input[type="checkbox"]:checked').forEach(checkbox => {
+        selectedLabels.add(checkbox.value);
+    });
+
+    const wordSearchTerm = elements.wordSearchInput.value.toLowerCase(); // 新しい検索語句を取得し、小文字に変換
+
+    console.log('performRecordSearch called for course:', course);
+    console.log('Selected Labels for search:', Array.from(selectedLabels));
+    console.log('Word Search Term:', wordSearchTerm); // デバッグログを追加
+
+    const filterType = document.querySelector('input[name="search-filter-type"]:checked').value;
+    const incorrectCount = parseInt(elements.searchIncorrectCountFilter.value) || 0;
+    const accuracyMin = parseInt(elements.accuracyRangeFilterMin.value) || 0;
+    const accuracyMax = parseInt(elements.accuracyRangeFilterMax.value) || 100;
+
+    let results = allWordsData[course] || [];
+    console.log('Initial results (all words in course):', results.length);
+
+    // Apply word search filter (ADDED)
+    if (wordSearchTerm) {
+        results = results.filter(word => word.word.toLowerCase().includes(wordSearchTerm));
+        console.log('Results after word search filter:', results.length);
+    }
+
+    // Apply label filter
+    if (selectedLabels.size > 0) {
+        const initialLabelFilteredCount = results.length;
+        results = results.filter(word => {
+            const hasLabel = word.labels && word.labels.some(label => {
+                const isSelected = selectedLabels.has(label);
+                console.log(`Checking word: ${word.word}, label: "${label}", selected: ${isSelected}`);
+                return isSelected;
+            });
+            return hasLabel;
+        });
+        console.log('Results after label filter:', results.length);
+    } else {
+        console.log('No labels selected, skipping label filter.');
+    }
+
+    // Apply problem filter
+    const finalFilterType = filterType; // Capture for logging
+    results = results.filter(word => {
+        const stats = state.wordStats[word.word] || { correct: 0, incorrect: 0 };
+        const totalAttempts = stats.correct + stats.incorrect;
+        const accuracy = totalAttempts > 0 ? (stats.correct / totalAttempts) * 100 : 100;
+
+        let includeWord = true;
+        switch (finalFilterType) {
+            case 'unseen':
+                includeWord = totalAttempts === 0;
+                break;
+            case 'mistakes':
+                includeWord = stats.incorrect > 0;
+                break;
+            case 'correct':
+                includeWord = stats.correct > 0;
+                break;
+            case 'custom':
+                const incorrectCountMatch = stats.incorrect >= incorrectCount;
+                const accuracyMatch = accuracy >= accuracyMin && accuracy <= accuracyMax;
+                includeWord = incorrectCountMatch && accuracyMatch;
+                break;
+            case 'all':
+            default:
+                includeWord = true;
+                break;
+        }
+        // console.log(`Word: ${word.word}, Filter Type: ${finalFilterType}, Stats: ${JSON.stringify(stats)}, Include: ${includeWord}`); // Detailed debug for each word
+        return includeWord;
+    });
+    console.log('Results after problem filter:', results.length); // Debug: final count
+
+    elements.recordSearchHitCount.textContent = results.length;
+
+    let tableHtml = '<table><thead><tr><th>語句</th><th>意味</th></tr></thead><tbody>';
+    if (results.length === 0) {
+        tableHtml += '<tr><td colspan="2">条件に合う記録が見つかりませんでした。</td></tr>';
+    } else {
+        results.forEach(word => {
+            tableHtml += `
+                <tr>
+                    <td>${word.word}</td>
+                    <td>${word.meaning}</td>
+                </tr>
+            `;
+        });
+    }
+    tableHtml += '</tbody></table>';
+    elements.recordSearchResultsTable.innerHTML = tableHtml;
+}
+
 
 function getModeDisplayName(modeKey) {
     const names = {
         'practice_typing': 'タイピング',
         'test_meaning_choice': '意味選択テスト',
-        'test_spelling': 'スペルテスト'
+        'test_spelling': 'スペルテスト',
+        'spelling': 'スペルテスト'
     };
-    if (modeKey.startsWith('practice_')) return names['practice_typing'];
-    return names[modeKey] || modeKey;
+    if (typeof modeKey === 'string' && modeKey.startsWith('practice_')) return names['practice_typing'];
+    return names[modeKey] || modeKey || '不明なモード'; // Provide a fallback string
 }
 
 // =================================================================
@@ -1290,7 +1681,10 @@ function getModeDisplayName(modeKey) {
 
 document.addEventListener('DOMContentLoaded', () => {
     loadWordsData();
-    initHistoryChart();
+    // Initial chart setup for typing tab (will be re-initialized when tab is active)
+    typingDailyChart = initChart(elements.typingDailyChartCanvas, typingDailyChart);
+    meaningTestChart = initChart(elements.meaningTestChartCanvas, meaningTestChart);
+    spellingTestChart = initChart(elements.spellingTestChartCanvas, spellingTestChart);
 });
 
 elements.showModeSelectionBtn.addEventListener('click', () => {
@@ -1302,24 +1696,35 @@ elements.modeBackButton.addEventListener('click', () => {
     showScreen(elements.startScreen);
 });
 elements.historyButton.addEventListener('click', () => {
-    showScreen(elements.historyScreen);
-    updateHistoryView('recent');
+    showScreen(elements.gradeManagementScreen);
+    updateGradeManagementView('history'); // デフォルトで履歴タブを表示
 });
-elements.historyBackButton.addEventListener('click', () => {
+elements.gradeManagementBackButton.addEventListener('click', () => {
     stopBGM(); // Stop BGM when returning to start screen
     showScreen(elements.startScreen);
 });
 elements.contentSelect.addEventListener('change', (event) => {
-    populateLabelSelection(event.target.value);
+    state.currentCourse = event.target.value; // Update current course in state
+    // When course changes, reset selected labels to all for the new course
+    state.selectedLabels.clear();
+    const newCourseLabels = courseLabels[state.currentCourse] || [];
+    newCourseLabels.forEach(label => state.selectedLabels.add(label));
+
+    populateLabelSelection(state.currentCourse); // Re-populate UI with new selections
     saveSettings();
 });
 elements.selectAllLabelsBtn.addEventListener('click', () => {
-    elements.labelSelectionContainer.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = true);
-    updateSelectedLabels();
+    state.selectedLabels.clear(); // Clear existing selections
+    elements.labelSelectionContainer.querySelectorAll('input[type="checkbox"]').forEach(c => {
+        c.checked = true;
+        state.selectedLabels.add(c.value); // Add all labels to the set
+    });
+    saveSettings();
 });
 elements.deselectAllLabelsBtn.addEventListener('click', () => {
     elements.labelSelectionContainer.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = false);
-    updateSelectedLabels();
+    state.selectedLabels.clear(); // Clear all selections
+    saveSettings();
 });
 document.querySelectorAll('input[name="filter-type"]').forEach(radio => {
     radio.addEventListener('change', (event) => {
@@ -1342,12 +1747,16 @@ elements.accuracyRangeFilterMax.addEventListener('input', (e) => {
 });
 elements.startMeaningChoiceTestBtn.addEventListener('click', () => startTest('test_meaning_choice'));
 elements.startSpellingTestBtn.addEventListener('click', () => startTest('spelling'));
-elements.startWordTypingAudioBtn.addEventListener('click', () => startGame('practice_word_typing_audio'));
+elements.startWordTypingWordAudioBtn.addEventListener('click', () => startGame('practice_word_typing_word_audio'));
+elements.startWordTypingMeaningAudioBtn.addEventListener('click', () => startGame('practice_word_typing_meaning_audio'));
 elements.startWordTypingNoAudioBtn.addEventListener('click', () => startGame('practice_word_typing_no_audio'));
-elements.startMeaningTypingAudioBtn.addEventListener('click', () => startGame('practice_meaning_recall_audio'));
+elements.startMeaningTypingMeaningAudioBtn.addEventListener('click', () => startGame('practice_meaning_recall_meaning_audio'));
+elements.startMeaningTypingWordAudioBtn.addEventListener('click', () => startGame('practice_meaning_recall_word_audio'));
 elements.startMeaningTypingNoAudioBtn.addEventListener('click', () => startGame('practice_meaning_recall_no_audio'));
-elements.startWordToMeaningAudioBtn.addEventListener('click', () => startGame('practice_word_to_meaning_audio'));
-elements.startWordToMeaningNoAudioBtn.addEventListener('click', () => startGame('practice_word_to_meaning_no_audio'));
+
+
+
+
 elements.typingInput.addEventListener('input', handleTypingInput);
 document.addEventListener('keydown', (event) => {
     if (elements.gameScreen.classList.contains('active') && event.key.length === 1) {
@@ -1429,19 +1838,23 @@ elements.backToTopButton.addEventListener('click', () => {
     showScreen(elements.startScreen);
 });
 
-elements.showRecentBtn.addEventListener('click', () => updateHistoryView('recent'));
-elements.showDailyBtn.addEventListener('click', () => updateHistoryView('daily'));
-elements.showBestsBtn.addEventListener('click', () => updateHistoryView('bests'));
-elements.showLabelStatsBtn.addEventListener('click', () => updateHistoryView('label'));
+// Grade Management Tab Event Listeners
+elements.tabHistory.addEventListener('click', () => updateGradeManagementView('history'));
+elements.tabTyping.addEventListener('click', () => updateGradeManagementView('typing'));
+elements.tabTest.addEventListener('click', () => updateGradeManagementView('test'));
+elements.tabRecordSearch.addEventListener('click', () => updateGradeManagementView('record-search'));
+
+// Test Sub-Tab Event Listeners
+elements.subTabMeaningTest.addEventListener('click', () => updateTestSubTab('meaning-test'));
+elements.subTabSpellingTest.addEventListener('click', () => updateTestSubTab('spelling-test'));
+
+// History Tab Mode Filter (still applies to the history tab content)
 document.querySelectorAll('input[name="history-mode-filter"]').forEach(radio => {
-    radio.addEventListener('change', () => {
-        const activeTab = document.querySelector('.history-nav .btn-tab.active').id;
-        const view = activeTab === 'show-recent-btn' ? 'recent' :
-                     activeTab === 'show-daily-btn' ? 'daily' :
-                     activeTab === 'show-bests-btn' ? 'bests' : 'label';
-        updateHistoryView(view);
+    radio.addEventListener('change', (event) => {
+        renderRecentHistory(event.target.value);
     });
 });
+
 elements.exportDataButton.addEventListener('click', () => {
     const data = { 
         history: state.history, 
@@ -1470,6 +1883,14 @@ elements.importFileInput.addEventListener('change', (event) => {
     reader.onload = (e) => {
         try {
             const importedData = JSON.parse(e.target.result);
+            // Basic schema validation
+            if (typeof importedData !== 'object' || importedData === null ||
+                !('history' in importedData) || !('dailyStats' in importedData) ||
+                !('wordStats' in importedData) || !('labelStats' in importedData) ||
+                !('personalBests' in importedData)) {
+                throw new Error('インポートされたデータの形式が正しくありません。');
+            }
+
             if (confirm('現在のデータを上書きしてインポートしますか？')) {
                 state.history = importedData.history || [];
                 state.dailyStats = importedData.dailyStats || {};
@@ -1504,7 +1925,6 @@ elements.clearDataButton.addEventListener('click', () => {
 if (elements.labelAccordionHeader) {
     elements.labelAccordionHeader.addEventListener('click', () => {
         const content = elements.labelAccordionContent;
-        const icon = elements.accordionIcon;
         const header = elements.labelAccordionHeader;
 
         if (content.classList.contains('expanded')) {
@@ -1512,7 +1932,24 @@ if (elements.labelAccordionHeader) {
             content.classList.remove('expanded');
             header.classList.remove('expanded');
         } else {
-            // Calculate the natural height of the content
+            content.style.maxHeight = content.scrollHeight + 'px';
+            content.classList.add('expanded');
+            header.classList.add('expanded');
+        }
+    });
+}
+
+// Record Search Tab Accordion Event Listener
+if (elements.searchLabelAccordionHeader) {
+    elements.searchLabelAccordionHeader.addEventListener('click', () => {
+        const content = elements.searchLabelSelectionContainer.closest('.form-group').querySelector('.label-accordion-content');
+        const header = elements.searchLabelAccordionHeader;
+
+        if (content.classList.contains('expanded')) {
+            content.style.maxHeight = '0';
+            content.classList.remove('expanded');
+            header.classList.remove('expanded');
+        } else {
             content.style.maxHeight = content.scrollHeight + 'px';
             content.classList.add('expanded');
             header.classList.add('expanded');
