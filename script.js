@@ -323,8 +323,8 @@ async function loadWordsData() {
     showScreen(elements.loadingScreen);
     try {
         const [wordsResponse, bgmResponse] = await Promise.all([
-            fetch('COS/words.json'),
-            fetch('COS/bgm_files.json') // ADDED: Fetch BGM file list
+            fetch('words.json'),
+            fetch('bgm_files.json') // ADDED: Fetch BGM file list
         ]);
 
         if (!wordsResponse.ok) throw new Error(`HTTP error! status: ${wordsResponse.status} for words.json`);
