@@ -378,6 +378,7 @@ function startRandomBGM() {
     if (elements.bgmPlayer) {
         elements.bgmPlayer.src = selectedBGM;
         elements.bgmPlayer.loop = true;
+        elements.bgmPlayer.volume = 0.8; // BGMの音量を調整 (0.0から1.0)
         elements.bgmPlayer.play().then(() => {
             state.isBgmPlaying = true;
         }).catch(e => console.error("BGM play failed:", e));
