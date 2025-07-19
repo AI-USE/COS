@@ -212,8 +212,8 @@ function speakMeaning(text) {
     }
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = 'ja-JP'; // 日本語に設定
-    utterance.rate = 1.5; // 読み上げ速度 (速めに設定)
-    utterance.volume = 1.0; // 音量
+    utterance.rate = 1.1; // 読み上げ速度 (速めに設定)
+    utterance.volume = 1.5; // 音量
     speechSynthesis.speak(utterance);
 }
 
