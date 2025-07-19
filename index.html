@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Typing Combo</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div id="game-container">
+        <!-- Loading Screen -->
+        <div id="loading-screen" class="screen">
+            <div class="loader"></div>
+            <p class="loading-text">Loading Assets...</p>
+        </div>
+
+        <!-- Start Screen -->
+        <div id="start-screen" class="screen active">
+            <div class="start-screen-header">
+                <h1 class="title">Typing Combo</h1>
+            <p class="lead">未来的なタイピング体験へようこそ。練習したいコースを選んで、ハイスコアを目指せ。</p>
+            </div>
+            
+            <div class="mode-selection-container">
+                <div class="form-group">
+                    <label for="content-select">コース選択</label>
+                    <select class="custom-select" id="content-select">
+                        <!-- Courses will be dynamically inserted here -->
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <div class="label-accordion-header">
+                        <label>出題範囲選択</label>
+                        <span class="accordion-icon">▼</span>
+                    </div>
+                    <div class="label-accordion-content">
+                        <div id="label-selection-container" class="label-checkbox-group">
+                            <!-- Labels will be dynamically inserted here -->
+                        </div>
+                        <div class="label-controls">
+                            <button id="select-all-labels" class="btn-tiny">全て選択</button>
+                            <button id="deselect-all-labels" class="btn-tiny">全て解除</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group filter-group">
+                    <label>問題フィルター</label>
+                    <div class="filter-options">
+                        <div class="filter-radio-group">
+                            <input type="radio" id="filter-all" name="filter-type" value="all" checked>
+                            <label for="filter-all">すべて</label>
+                            <input type="radio" id="filter-unseen" name="filter-type" value="unseen">
+                            <label for="filter-unseen">未出題</label>
+                            <input type="radio" id="filter-mistakes" name="filter-type" value="mistakes">
+                            <label for="filter-mistakes">苦手</label>
+                            <input type="radio" id="filter-correct" name="filter-type" value="correct">
+                            <label for="filter-correct">正解済み</label>
+                            <input type="radio" id="filter-custom" name="filter-type" value="custom">
+                            <label for="filter-custom">カスタム</label>
+                        </div>
+                        <div id="custom-filter-panel" class="custom-filter-panel" style="display: none;">
+                            <div class="filter-row">
+                                <label for="incorrect-count-filter">間違えた回数:</label>
+                                <input type="number" id="incorrect-count-filter" min="0" placeholder="例: 2">
+                                <span>回以上</span>
+                            </div>
+                            <div class="filter-row">
+                                <label for="accuracy-range-filter-min">正答率:</label>
+                                <input type="number" id="accuracy-range-filter-min" min="0" max="100" placeholder="0">
+                                <span>% 〜</span>
+                                <input type="number" id="accuracy-range-filter-max" min="0" max="100" placeholder="100">
+                                <span>%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button id="show-mode-selection-btn" class="btn">タイピング練習</button>
+                <button id="start-meaning-choice-test-btn" class="btn">意味 → 語句選択テスト</button>
+                <button id="start-spelling-test-btn" class="btn">意味 → 語句スペルテスト</button>
+            </div>
+            
+            <div class="bottom-nav">
+                <button id="history-button" class="btn btn-tertiary">成績を見る</button>
+                <div class="data-management">
+                    <button id="export-data-button" class="btn btn-tertiary">データ保存</button>
+                    <button id="import-data-button" class="btn btn-tertiary">データ読込</button>
+                    <input type="file" id="import-file-input" accept=".json" style="display: none;">
+                </div>
+                <button id="clear-data-button" class="btn btn-tertiary btn-danger">データ削除</button>
+            </div>
+        </div>
+
+        <!-- Mode Selection Screen -->
+        <div id="mode-selection-screen" class="screen">
+            <h2 class="title">タイピング練習 モード選択</h2>
+            <div class="mode-buttons">
+                <div class="mode-category">
+                    <p class="mode-category-title">語句タイピング</p>
+                    <button id="start-word-typing-word-audio-btn" class="btn">語句音声あり</button>
+                    <button id="start-word-typing-meaning-audio-btn" class="btn">意味音声あり</button>
+                    <button id="start-word-typing-no-audio-btn" class="btn btn-secondary">音声なし</button>
+                </div>
+                <div class="mode-category">
+                    <p class="mode-category-title">意味 → 語句タイピング</p>
+                    <button id="start-meaning-typing-meaning-audio-btn" class="btn">意味読み上げ</button>
+                    <button id="start-meaning-typing-word-audio-btn" class="btn">語句読み上げ</button>
+                    <button id="start-meaning-typing-no-audio-btn" class="btn btn-secondary">音声なし</button>
+                </div>
+                
+                
+                
+            </div>
+            <button id="mode-back-button" class="btn btn-tertiary">戻る</button>
+        </div>
+
+        <!-- Game Screen (Practice Mode) -->
+        <div id="game-screen" class="screen">
+            <div class="game-header">
+                <div id="score-container" class="game-info"><span>Score</span><span id="score">0</span></div>
+                <div id="combo-container" class="game-info"><span>Combo</span><span id="combo-display">0</span></div>
+                <div id="miss-container" class="game-info"><span>Miss</span><span id="miss-count">0</span></div>
+                <div id="timer-container" class="game-info"><span>Time</span><span id="timer">60</span></div>
+            </div>
+            <div id="word-container">
+                <div id="word-display"></div>
+                <div id="input-display-container"><div id="input-display"></div></div>
+                <input type="text" id="typing-input" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+            </div>
+            <div id="meaning-display"></div>
+        </div>
+
+        <!-- Test Screen -->
+        <div id="test-screen" class="screen">
+            <div class="test-header">
+                 <div id="test-progress-display" class="game-info"></div>
+                 <div id="test-word-display"></div>
+            </div>
+            <div id="multiple-choice-container">
+                <button class="btn test-choice-button"></button>
+                <button class="btn test-choice-button"></button>
+                <button class="btn test-choice-button"></button>
+                <button class="btn test-choice-button"></button>
+            </div>
+            <div id="typing-test-container" style="display: none;">
+                <div id="test-input-display-container"><div id="test-input-display"></div></div>
+                <input type="text" id="test-typing-input" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+                <button id="test-submit-button" class="btn">解答</button>
+            </div>
+            <div id="test-meaning-display"></div>
+            <div class="test-navigation">
+                <button id="test-finish-button" class="btn btn-tertiary">テストを終了</button>
+            </div>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="result-screen" class="screen">
+            <h2 class="result-title">FINISH!</h2>
+            <div class="result-details">
+                <div class="result-item"><span>スコア</span><span id="result-score">0</span></div>
+                <div class="result-item"><span>KPM</span><span id="result-kpm">0</span></div>
+                <div class="result-item"><span>WPM</span><span id="result-wpm">0</span></div>
+                <div class="result-item"><span>正解率</span><span id="result-accuracy">0%</span></div>
+                <div class="result-item"><span>最大コンボ</span><span id="result-max-combo">0</span></div>
+                <div class="result-item practice-mode-only"><span>ミス数</span><span id="result-miss">0</span></div>
+                <div id="result-difficulty-breakdown" class="result-item practice-mode-only">
+                    <!-- Label-based results here -->
+                </div>
+                <div class="result-item test-mode-only" style="display: none;"><span>正解数</span><span id="result-correct-count">0</span></div>
+                <div class="result-item test-mode-only" style="display: none;"><span>不正解数</span><span id="result-incorrect-count">0</span></div>
+                <div class="result-item test-mode-only" style="display: none;"><span>総問題数</span><span id="result-total-questions">0</span></div>
+                <div class="result-item test-mode-only" style="display: none;"><span>所要時間</span><span id="result-duration">0秒</span></div>
+            </div>
+            <div class="result-actions">
+                <button id="restart-button" class="btn">もう一度プレイ</button>
+                <button id="back-to-top-button" class="btn btn-secondary">トップに戻る</button>
+            </div>
+        </div>
+
+        <!-- Grade Management Screen -->
+        <div id="grade-management-screen" class="screen">
+            <h2 class="grade-management-title">成績管理</h2>
+            <nav class="grade-management-nav">
+                <button id="tab-history" class="btn-tab active" data-tab="history">履歴</button>
+                <button id="tab-typing" class="btn-tab" data-tab="typing">タイピング</button>
+                <button id="tab-test" class="btn-tab" data-tab="test">テスト</button>
+                <button id="tab-record-search" class="btn-tab" data-tab="record-search">記録検索</button>
+            </nav>
+
+            <div id="grade-management-content">
+                <!-- History Tab Content -->
+                <div id="history-tab-content" class="tab-content active">
+                    <div class="mode-filter-container">
+                        <label>表示モード:</label>
+                        <input type="radio" id="filter-all-modes" name="history-mode-filter" value="all" checked>
+                        <label for="filter-all-modes">全て</label>
+                        <input type="radio" id="filter-typing-mode" name="history-mode-filter" value="practice_typing">
+                        <label for="filter-typing-mode">タイピング</label>
+                        <input type="radio" id="filter-spelling-mode" name="history-mode-filter" value="spelling">
+                        <label for="filter-spelling-mode">スペルテスト</label>
+                        <input type="radio" id="filter-meaning-mode" name="history-mode-filter" value="test_meaning_choice">
+                        <label for="filter-meaning-mode">意味テスト</label>
+                    </div>
+                    <div id="history-table-container"></div>
+                </div>
+
+                <!-- Typing Tab Content -->
+                <div id="typing-tab-content" class="tab-content">
+                    <h3 class="tab-section-title">自己最高記録</h3>
+                    <div id="typing-personal-bests-container" class="result-details"></div>
+                    <h3 class="tab-section-title">日別平均と推移</h3>
+                    <div id="typing-chart-container" class="chart-container">
+                        <canvas id="typing-daily-chart"></canvas>
+                    </div>
+                    <div id="typing-daily-table-container"></div>
+                </div>
+
+                <!-- Test Tab Content -->
+                <div id="test-tab-content" class="tab-content">
+                    <nav class="test-sub-nav">
+                        <button id="sub-tab-meaning-test" class="btn-sub-tab active" data-sub-tab="meaning-test">意味テスト</button>
+                        <button id="sub-tab-spelling-test" class="btn-sub-tab" data-sub-tab="spelling-test">スペルテスト</button>
+                    </nav>
+                    <div id="test-sub-tab-content">
+                        <!-- Meaning Test Content -->
+                        <div id="meaning-test-content" class="sub-tab-content active">
+                            <div class="form-group">
+                                <label for="test-course-select-meaning">コース選択</label>
+                                <select class="custom-select" id="test-course-select-meaning"></select>
+                            </div>
+                            <h3 class="tab-section-title">正答率グラフ</h3>
+                            <div id="meaning-test-chart-container" class="chart-container">
+                                <canvas id="meaning-test-chart"></canvas>
+                            </div>
+                            <h3 class="tab-section-title">ラベル別成績</h3>
+                            <div id="meaning-test-label-stats-table"></div>
+                        </div>
+                        <!-- Spelling Test Content -->
+                        <div id="spelling-test-content" class="sub-tab-content">
+                            <div class="form-group">
+                                <label for="test-course-select-spelling">コース選択</label>
+                                <select class="custom-select" id="test-course-select-spelling"></select>
+                            </div>
+                            <h3 class="tab-section-title">正答率グラフ</h3>
+                            <div id="spelling-test-chart-container" class="chart-container">
+                                <canvas id="spelling-test-chart"></canvas>
+                            </div>
+                            <h3 class="tab-section-title">ラベル別成績</h3>
+                            <div id="spelling-test-label-stats-table"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Record Search Tab Content -->
+                <div id="record-search-tab-content" class="tab-content">
+                    <div class="form-group">
+                        <label for="search-course-select">コース</label>
+                        <select class="custom-select" id="search-course-select"></select>
+                    </div>
+                    <!-- 新しい語句検索フィールドを追加 -->
+                    <div class="form-group">
+                        <label for="word-search-input">語句検索</label>
+                        <input type="text" id="word-search-input" placeholder="検索したい語句を入力">
+                    </div>
+                    <div class="form-group">
+                        <div id="search-label-accordion-header" class="label-accordion-header">
+                            <label>出題範囲</label>
+                            <span class="accordion-icon">▼</span>
+                        </div>
+                        <div class="label-accordion-content">
+                            <div id="search-label-selection-container" class="label-checkbox-group"></div>
+                            <div class="label-controls">
+                                <button id="search-select-all-labels" class="btn-tiny">全て選択</button>
+                                <button id="search-deselect-all-labels" class="btn-tiny">全て解除</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group filter-group">
+                        <label>問題フィルター</label>
+                        <div class="filter-options">
+                            <div class="filter-radio-group">
+                                <input type="radio" id="search-filter-all" name="search-filter-type" value="all" checked>
+                                <label for="search-filter-all">すべて</label>
+                                <input type="radio" id="search-filter-unseen" name="search-filter-type" value="unseen">
+                                <label for="search-filter-unseen">未出題</label>
+                                <input type="radio" id="search-filter-mistakes" name="search-filter-type" value="mistakes">
+                                <label for="search-filter-mistakes">苦手</label>
+                                <input type="radio" id="search-filter-correct" name="search-filter-type" value="correct">
+                                <label for="search-filter-correct">正解済み</label>
+                                <input type="radio" id="search-filter-custom" name="search-filter-type" value="custom">
+                                <label for="search-filter-custom">カスタム</label>
+                            </div>
+                            <div id="search-custom-filter-panel" class="custom-filter-panel" style="display: none;">
+                                <div class="filter-row">
+                                    <label for="search-incorrect-count-filter">間違えた回数:</label>
+                                    <input type="number" id="search-incorrect-count-filter" min="0" placeholder="例: 2">
+                                    <span>回以上</span>
+                                </div>
+                                <div class="filter-row">
+                                    <label for="search-accuracy-range-filter-min">正答率:</label>
+                                    <input type="number" id="search-accuracy-range-filter-min" min="0" max="100" placeholder="0">
+                                    <span>% 〜</span>
+                                    <input type="number" id="search-accuracy-range-filter-max" min="0" max="100" placeholder="100">
+                                    <span>%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button id="perform-record-search" class="btn">検索</button>
+                    <p class="hit-count">ヒット数: <span id="record-search-hit-count">0</span>件</p>
+                    <div id="record-search-results-table"></div>
+                </div>
+            </div>
+
+            <button id="grade-management-back-button" class="btn">戻る</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+    <audio id="bgm-player" loop></audio>
+</body>
+</html>
